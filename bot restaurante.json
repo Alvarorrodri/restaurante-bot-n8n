@@ -1,0 +1,158 @@
+{
+  "name": "Linfeid bot",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -512,
+        -192
+      ],
+      "id": "5696a33d-9906-425d-b47d-815e322e3ae3",
+      "name": "Telegram Trigger",
+      "webhookId": "8421ac06-4f8f-4c0f-b264-d517db0fc6f0",
+      "credentials": {
+        "telegramApi": {
+          "id": "D1GHRezQ3UH8fs4X",
+          "name": "Linfeid bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "1369492650",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        48,
+        -192
+      ],
+      "id": "9584a382-a40c-4ce6-ae45-17465c754edf",
+      "name": "Send a text message",
+      "webhookId": "bf32c1d9-d4fb-4213-a40c-f0e9993dced1",
+      "credentials": {
+        "telegramApi": {
+          "id": "D1GHRezQ3UH8fs4X",
+          "name": "Linfeid bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Eres el asistente virtual del Restaurante Linfeid. Responde siempre en español de forma amable y profesional. Responde en texto plano, sin usar asteriscos, guiones ni ningún tipo de formato markdown.\n\nINFORMACIÓN DEL RESTAURANTE:\n- Dirección: Calle Mayor 15, Talavera de la Reina\n- Horario: Martes a Domingo 13:00-16:00 y 20:00-23:00. Lunes cerrado.\n- Teléfono: 925 123 456\n\nMENÚ DEL DÍA (20€):\n- Primeros: Ensalada mixta o Sopa del día\n- Segundos: Merluza al horno, Pollo asado o Chuletón\n- Postre + bebida incluida\n\nCARTA DESTACADA:\n- Chuletón de ternera 22€\n- Merluza a la vasca 18€\n- Tabla de ibéricos 15€\n\nRESERVAS:\n- Para reservar mesa pregunta: nombre, día, hora y número de personas\n- Confirma siempre la reserva al final\n\nMensaje del cliente: {{ $('Telegram Trigger').item.json.message.text }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -304,
+        -192
+      ],
+      "id": "5f7ece00-a999-49b2-97c9-3989058e8aea",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -368,
+        -16
+      ],
+      "id": "05660967-ac61-46ec-8ff7-e7f543b4e6b8",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "p8tYrbiHwibiagf6",
+          "name": "Linfeid bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -208,
+        0
+      ],
+      "id": "d08e5c06-60fc-49f2-b60e-3b4bfee682c4",
+      "name": "Simple Memory"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "af90de46-a267-4a3d-9f9d-28f51653a30a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "179ae48f3a8eddbf16613c47cc06a99e50667fd869a49c2846bde908eb3cee72"
+  },
+  "id": "cCGJ0fP1DFKKUxUe",
+  "tags": []
+}
