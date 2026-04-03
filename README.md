@@ -42,4 +42,5 @@ Este bot es replicable para cualquier negocio local:
 ## Autor
 
 Álvaro Rodrigo Cantalejo
+
 LinkedIn: linkedin.com/in/alvarorrodrigo
